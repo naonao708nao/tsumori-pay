@@ -58,6 +58,15 @@ export default function RootLayout() {
     setCategories(prev => [...prev, { id: Date.now().toString(), label, amount }]);
   };
 
+  // 特定の履歴を削除する関数
+  const deleteSaving = (id: string) => {
+    const itemToDelete = history.find(item => item.id === id);
+    if (!itemToDelete) return;
+    
+    setTotal(prev => prev - itemToDelete.amount);
+    setHistory(prev => prev.filter(item => item.id !== id));
+  };
+
   // 貯金を追加する関数
   const addSaving = (label: string, amount: number) => {
     setTotal(prev => prev + amount);
@@ -65,7 +74,7 @@ export default function RootLayout() {
   };
 
   return (
-    <SavingsContext.Provider value={{ total, history, categories, addSaving, addCategory }}>
+    <SavingsContext.Provider value={{ total, history, categories, addSaving, addCategory, deleteSaving }}>
       <Tabs>
         <Tabs.Screen 
           name="index" 
