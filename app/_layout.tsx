@@ -67,6 +67,11 @@ export default function RootLayout() {
     setHistory(prev => prev.filter(item => item.id !== id));
   };
 
+  // 特定のカテゴリを削除する関数
+  const deleteCategory = (id: string) => {
+    setCategories(prev => prev.filter(cat => cat.id !== id));
+  };
+
   // 貯金を追加する関数
   const addSaving = (label: string, amount: number) => {
     setTotal(prev => prev + amount);
@@ -74,7 +79,7 @@ export default function RootLayout() {
   };
 
   return (
-    <SavingsContext.Provider value={{ total, history, categories, addSaving, addCategory, deleteSaving }}>
+    <SavingsContext.Provider value={{ total, history, categories, addSaving, addCategory, deleteSaving, deleteCategory }}>
       <Tabs>
         <Tabs.Screen 
           name="index" 

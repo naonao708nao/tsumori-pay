@@ -1,11 +1,11 @@
-import { View, Text, TouchableOpacity, StyleSheet, Modal, TextInput, ScrollView } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Modal, TextInput, ScrollView, Alert, Platform } from 'react-native';
 import { useContext, useState } from 'react';
 import { SavingsContext } from './_layout';
 import { useRouter } from 'expo-router';
 
 
 export default function Input() {
-  const { categories, addSaving, addCategory } = useContext(SavingsContext);
+  const { categories, addSaving, addCategory, deleteCategory } = useContext(SavingsContext);
   const router = useRouter();
 
   // モーダルと入力フォームの状態
@@ -16,6 +16,25 @@ export default function Input() {
   const handlePress = (label: string, amount: number) => {
     addSaving(label, amount);
     router.push('/'); // 保存したらホームへ戻る
+  };
+
+  const confirmDeleteCategory = (id: string, label: string) => {
+    const message = `カテゴリ「${label}」を削除しますか？`;
+
+    if (Platform.OS === 'web') {
+      if (window.confirm(message)) {
+        deleteCategory(id);
+      }
+    } else {
+      Alert.alert(
+        "カテゴリの削除",
+        message,
+        [
+          { text: "キャンセル", style: "cancel" },
+          { text: "削除", style: "destructive", onPress: () => deleteCategory(id) }
+        ]
+      );
+    }
   };
 
   const handleAddCategory = () => {
@@ -31,7 +50,14 @@ export default function Input() {
       <Text style={styles.title}>何をした「つもり」？</Text>
       
       {categories.map((cat: any) => (
-        <TouchableOpacity key={cat.id} style={styles.card} onPress={() => handlePress(cat.label, cat.amount)}>
+        <TouchableOpacity 
+          key={cat.id} 
+          style={styles.card} 
+          onPress={() => handlePress(cat.label, cat.amount)}
+          onLongPress={() => confirmDeleteCategory(cat.id, cat.label)} // 【修正】長押しで発火
+          delayLongPress={500} // 誤操作防止のため0.5秒の長押しが必要
+          activeOpacity={0.7}
+        >
           <Text style={styles.cardText}>{cat.label}</Text>
           <Text style={styles.cardAmount}>+¥{cat.amount.toLocaleString()}</Text>
         </TouchableOpacity>
