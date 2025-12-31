@@ -17,6 +17,10 @@ npm install expo-router react-native-safe-area-context react-native-screens expo
 ```
 
 ```bash
+npx expo install @react-native-async-storage/async-storage
+```
+
+```bash
 npx expo install --fix
 
 npx expo customize tsconfig.json
